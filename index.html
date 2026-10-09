@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Classic Minesweeper built with React, TypeScript and DaisyUI." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Minesweeper</title>
+    <script>
+      // Apply the saved theme before React renders to avoid a flash of the default theme.
+      try {
+        var saved = JSON.parse(localStorage.getItem('minesweeper:settings') || '{}');
+        if (saved.theme && saved.theme !== 'system') {
+          document.documentElement.setAttribute('data-theme', saved.theme);
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

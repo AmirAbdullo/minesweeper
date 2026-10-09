@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark, cupcake, emerald, retro, synthwave, forest, dracula;
+}
+
+/* Board sizing: cells shrink to fit the screen, but never below a comfortable tap target.
+   Boards wider than the screen scroll horizontally inside their card. */
+.ms-board {
+  /* Horizontal page + card padding (plus room for a desktop scrollbar on wider screens). */
+  --gutter: 3.75rem;
+  /* The 1px gaps between cells plus the 1px padding on each side. */
+  --gaps: calc((var(--cols) + 1) * 1px);
+  --cell: clamp(1.75rem, calc((min(100vw, 80rem) - var(--gutter) - var(--gaps)) / var(--cols)), 2.5rem);
+}
+
+@media (min-width: 640px) {
+  .ms-board {
+    --gutter: 8rem;
+  }
+}
+
+.ms-cell {
+  width: var(--cell);
+  height: var(--cell);
+  font-size: calc(var(--cell) * 0.55);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Raised look for unrevealed cells. */
+.ms-cell-hidden {
+  cursor: pointer;
+  box-shadow:
+    inset 2px 2px 0 color-mix(in oklab, var(--color-base-100) 65%, transparent),
+    inset -2px -2px 0 color-mix(in oklab, var(--color-base-content) 22%, transparent);
+}
+
+.ms-cell-hidden:active {
+  box-shadow: none;
+}
+
+/* Newly revealed cells pop in; Board sets --delay so a flood fill ripples out from the click. */
+@keyframes ms-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.ms-reveal {
+  animation: ms-pop 180ms ease-out backwards;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* The mine that went off. */
+@keyframes ms-boom {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.45);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.ms-boom {
+  position: relative;
+  z-index: 1;
+  animation: ms-boom 380ms cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+/* The whole board shakes when a mine is hit. */
+@keyframes ms-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  12% {
+    transform: translateX(-7px) rotate(-0.4deg);
+  }
+  26% {
+    transform: translateX(6px) rotate(0.3deg);
+  }
+  40% {
+    transform: translateX(-5px);
+  }
+  54% {
+    transform: translateX(4px);
+  }
+  68% {
+    transform: translateX(-2px);
+  }
+  82% {
+    transform: translateX(1px);
+  }
+}
+
+.ms-shake {
+  animation: ms-shake 500ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-reveal,
+  .ms-boom,
+  .ms-shake {
+    animation: none;
+  }
+}
